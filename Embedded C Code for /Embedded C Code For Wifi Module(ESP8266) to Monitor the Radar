@@ -1,0 +1,31 @@
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+
+const char* ssid = "YOUR_SSID";
+const char* password = "YOUR_PASSWORD";
+
+ESP8266WebServer server(80);
+
+void handleRoot() {
+  server.send(200, "text/html", "<h1>Radar Data</h1>");
+}
+
+void setup() {
+  Serial.begin(9600);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+  }
+
+  server.on("/", handleRoot);
+  server.begin();
+}
+
+void loop() {
+  server.handleClient();
+  if (Serial.available()) {
+    String data = Serial.readStringUntil('\n');
+    // Here you can process or forward radar data
+  }
+}
